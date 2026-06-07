@@ -1,6 +1,5 @@
 pipeline {
 
-```
 agent any
 
 stages {
@@ -125,6 +124,4 @@ post {
         deleteDir()
     }
 }
-```
-
 }
