@@ -1,11 +1,7 @@
 pipeline {
 
 ```
-agent { label 'k3s' }
-
-options {
-    buildDiscarder(logRotator(numToKeepStr: '10'))
-}
+agent any
 
 stages {
 
@@ -15,13 +11,20 @@ stages {
         }
     }
 
-    stage('Environment Info') {
+    stage('Environment Check') {
         steps {
             sh '''
+            echo "=== User ==="
             whoami
-            pwd
+
+            echo "=== Docker ==="
             docker --version
+
+            echo "=== Kubectl ==="
             kubectl version --client
+
+            echo "=== Cluster ==="
+            kubectl get nodes
             '''
         }
     }
@@ -46,7 +49,7 @@ stages {
         }
     }
 
-    stage('Import Images Into K3s') {
+    stage('Import Images To K3s') {
         steps {
             sh '''
             docker save devops-assignment/api:latest -o api.tar
@@ -71,13 +74,7 @@ stages {
             sh '''
             kubectl rollout status deployment/api -n dev --timeout=180s
             kubectl rollout status deployment/web -n dev --timeout=180s
-            '''
-        }
-    }
 
-    stage('Smoke Test DEV') {
-        steps {
-            sh '''
             kubectl get pods -n dev
             '''
         }
@@ -96,19 +93,13 @@ stages {
             sh '''
             kubectl rollout status deployment/api -n qat --timeout=180s
             kubectl rollout status deployment/web -n qat --timeout=180s
-            '''
-        }
-    }
 
-    stage('Smoke Test QAT') {
-        steps {
-            sh '''
             kubectl get pods -n qat
             '''
         }
     }
 
-    stage('Cluster Status') {
+    stage('Final Status') {
         steps {
             sh '''
             echo "===== DEV ====="
@@ -123,15 +114,15 @@ stages {
 
 post {
     success {
-        echo 'Deployment successful'
+        echo 'SUCCESS: DEV and QAT deployments completed.'
     }
 
     failure {
-        echo 'Deployment failed'
+        echo 'FAILED: Pipeline execution failed.'
     }
 
     always {
-        cleanWs()
+        deleteDir()
     }
 }
 ```
