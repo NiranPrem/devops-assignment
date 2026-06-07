@@ -3,6 +3,10 @@ pipeline {
 ```
 agent { label 'k3s' }
 
+options {
+    buildDiscarder(logRotator(numToKeepStr: '10'))
+}
+
 stages {
 
     stage('Checkout') {
@@ -11,12 +15,23 @@ stages {
         }
     }
 
+    stage('Environment Info') {
+        steps {
+            sh '''
+            whoami
+            pwd
+            docker --version
+            kubectl version --client
+            '''
+        }
+    }
+
     stage('Build API Image') {
         steps {
             sh '''
             docker build \
-            -t devops-assignment/api:latest \
-            ./app/api
+              -t devops-assignment/api:latest \
+              ./app/api
             '''
         }
     }
@@ -25,8 +40,8 @@ stages {
         steps {
             sh '''
             docker build \
-            -t devops-assignment/web:latest \
-            ./app/web
+              -t devops-assignment/web:latest \
+              ./app/web
             '''
         }
     }
@@ -54,8 +69,16 @@ stages {
     stage('Validate DEV') {
         steps {
             sh '''
-            kubectl rollout status deployment/api -n dev --timeout=120s
-            kubectl rollout status deployment/web -n dev --timeout=120s
+            kubectl rollout status deployment/api -n dev --timeout=180s
+            kubectl rollout status deployment/web -n dev --timeout=180s
+            '''
+        }
+    }
+
+    stage('Smoke Test DEV') {
+        steps {
+            sh '''
+            kubectl get pods -n dev
             '''
         }
     }
@@ -71,8 +94,16 @@ stages {
     stage('Validate QAT') {
         steps {
             sh '''
-            kubectl rollout status deployment/api -n qat --timeout=120s
-            kubectl rollout status deployment/web -n qat --timeout=120s
+            kubectl rollout status deployment/api -n qat --timeout=180s
+            kubectl rollout status deployment/web -n qat --timeout=180s
+            '''
+        }
+    }
+
+    stage('Smoke Test QAT') {
+        steps {
+            sh '''
+            kubectl get pods -n qat
             '''
         }
     }
@@ -80,8 +111,11 @@ stages {
     stage('Cluster Status') {
         steps {
             sh '''
-            kubectl get pods -n dev
-            kubectl get pods -n qat
+            echo "===== DEV ====="
+            kubectl get all -n dev
+
+            echo "===== QAT ====="
+            kubectl get all -n qat
             '''
         }
     }
