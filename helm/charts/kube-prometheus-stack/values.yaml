@@ -1,0 +1,85 @@
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeEtcd:
+  enabled: false
+
+kubeProxy:
+  enabled: false
+
+prometheus:
+  service:
+    type: NodePort
+    nodePort: 30090
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    ruleSelector: {}
+    ruleNamespaceSelector: {}
+    podMonitorSelector: {}
+    serviceMonitorSelector: {}
+
+grafana:
+  service:
+    type: NodePort
+    nodePort: 30030
+  adminPassword: "admin"
+  analytics:
+    reporting_enabled: false
+    check_for_updates: false
+  persistence:
+    enabled: true
+    storageClassName: local-path
+    size: 2Gi
+  sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
+    datasources:
+      enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+alertmanager:
+  service:
+    type: NodePort
+    nodePort: 30093
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+
+nodeExporter:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true

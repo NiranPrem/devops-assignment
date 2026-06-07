@@ -1,0 +1,33 @@
+controller:
+  kind: DaemonSet
+  hostNetwork: true
+  hostPort:
+    enabled: true
+    ports:
+      http: 80
+      https: 443
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  nodeSelector:
+    kubernetes.io/os: linux
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  securityContext:
+    runAsNonRoot: false
+    allowPrivilegeEscalation: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

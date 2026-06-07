@@ -1,0 +1,44 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: dev
+
+resources:
+  - ../../base
+
+commonLabels:
+  environment: dev
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+    target:
+      kind: Deployment
+      name: api
+
+  - patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+    target:
+      kind: Deployment
+      name: web
+
+  - patch: |-
+      - op: replace
+        path: /stringData/POSTGRES_PASSWORD
+        value: "dev-password-change-me"
+    target:
+      kind: Secret
+      name: postgres-secret
+
+images:
+  - name: devops-assignment/api
+    newName: devops-assignment/api
+    newTag: dev
+
+  - name: devops-assignment/web
+    newName: devops-assignment/web
+    newTag: dev

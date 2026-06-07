@@ -1,0 +1,47 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: qat
+
+resources:
+  - ../../base
+
+commonLabels:
+  environment: qat
+
+patches:
+  # API replicas = 2
+  - patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+    target:
+      kind: Deployment
+      name: api
+
+  # WEB replicas = 2
+  - patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+    target:
+      kind: Deployment
+      name: web
+
+  # Postgres password override
+  - patch: |-
+      - op: replace
+        path: /stringData/POSTGRES_PASSWORD
+        value: "qat-password-change-me"
+    target:
+      kind: Secret
+      name: postgres-secret
+
+images:
+  - name: devops-assignment/api
+    newName: devops-assignment/api
+    newTag: dev
+
+  - name: devops-assignment/web
+    newName: devops-assignment/web
+    newTag: dev

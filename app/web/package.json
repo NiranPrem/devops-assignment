@@ -1,0 +1,12 @@
+{
+  "name": "devops-assignment-web",
+  "version": "1.0.0",
+  "description": "Frontend for DevOps assignment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

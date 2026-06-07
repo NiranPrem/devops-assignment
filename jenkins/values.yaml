@@ -1,0 +1,54 @@
+controller:
+  image: jenkins/jenkins
+  tag: lts-jdk17
+  imagePullPolicy: IfNotPresent
+
+  serviceType: NodePort
+  nodePort: 30180
+
+  adminUser: admin
+  adminPassword: "admin-change-me"
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+  javaOpts: >-
+    -Djenkins.install.runSetupWizard=false
+    -Dhudson.model.DirectoryBrowserSupport.CSP=
+
+  installPlugins:
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - docker-workflow:latest
+    - blueocean:latest
+    - credentials-binding:latest
+    - pipeline-stage-view:latest
+    - ansicolor:latest
+    - timestamper:latest
+    - workspace-cleanup:latest
+    - job-dsl:latest
+    - configuration-as-code:latest
+    - kubernetes-credentials-provider:latest
+    - prometheus:latest
+
+persistence:
+  enabled: true
+  storageClass: local-path
+  size: 10Gi
+
+agent:
+  enabled: true
+
+serviceAccount:
+  create: true
+  name: jenkins
+
+rbac:
+  create: true
+  readSecrets: true
