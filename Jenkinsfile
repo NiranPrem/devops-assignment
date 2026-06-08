@@ -146,7 +146,7 @@ pipeline {
                     if (webScanExit == 1) {
                         error("CRITICAL vulnerabilities found in Web image — build failed. Fix the CVEs and rebuild.")
                     }
-                    echo "✅ No CRITICAL vulnerabilities found in either image."
+                    echo " No CRITICAL vulnerabilities found in either image."
                 }
             }
         }
