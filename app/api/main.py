@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
+from pydantic import BaseModel
 import asyncpg
 import os
 import time
@@ -14,6 +15,11 @@ DATABASE_URL = os.getenv("DATABASE_URL", "")
 START_TIME = time.time()
 REQUEST_COUNT = 0
 REQUEST_ERRORS = 0
+
+
+class Customer(BaseModel):
+    fullname: str
+    email: str
 
 
 @app.on_event("startup")
@@ -41,6 +47,15 @@ async def startup():
             name TEXT NOT NULL,
             price INTEGER NOT NULL,
             category TEXT NOT NULL
+        )
+        """)
+
+        await conn.execute("""
+        CREATE TABLE IF NOT EXISTS customers (
+            id SERIAL PRIMARY KEY,
+            fullname TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            created_at TIMESTAMPTZ DEFAULT NOW()
         )
         """)
 
@@ -149,11 +164,7 @@ async def products():
     async with app.state.db.acquire() as conn:
 
         rows = await conn.fetch("""
-        SELECT
-            id,
-            name,
-            price,
-            category
+        SELECT id,name,price,category
         FROM products
         ORDER BY id
         """)
@@ -161,12 +172,40 @@ async def products():
         return [dict(r) for r in rows]
 
 
+@app.post("/customers/register")
+async def register_customer(customer: Customer):
+
+    async with app.state.db.acquire() as conn:
+
+        row = await conn.fetchrow(
+            """
+            INSERT INTO customers(fullname,email)
+            VALUES($1,$2)
+            RETURNING id,fullname,email,created_at
+            """,
+            customer.fullname,
+            customer.email
+        )
+
+        return dict(row)
+
+
+@app.get("/customers/list")
+async def customer_list():
+
+    async with app.state.db.acquire() as conn:
+
+        rows = await conn.fetch("""
+        SELECT id,fullname,email,created_at
+        FROM customers
+        ORDER BY id DESC
+        """)
+
+        return [dict(r) for r in rows]
+
+
 @app.get("/customers")
 async def customers():
-
-    global REQUEST_COUNT
-    REQUEST_COUNT += 1
-
     return {
         "total_customers": 100000,
         "active_customers": 85432,
@@ -176,10 +215,6 @@ async def customers():
 
 @app.get("/orders")
 async def orders():
-
-    global REQUEST_COUNT
-    REQUEST_COUNT += 1
-
     return {
         "total_orders": 50231,
         "pending_orders": 134,
@@ -189,10 +224,6 @@ async def orders():
 
 @app.get("/platform")
 async def platform():
-
-    global REQUEST_COUNT
-    REQUEST_COUNT += 1
-
     return {
         "frontend": "NodeJS",
         "backend": "FastAPI",
@@ -210,16 +241,10 @@ async def platform():
 @app.get("/items")
 async def list_items():
 
-    global REQUEST_COUNT
-    REQUEST_COUNT += 1
-
     async with app.state.db.acquire() as conn:
 
         rows = await conn.fetch("""
-        SELECT
-            id,
-            name,
-            created_at
+        SELECT id,name,created_at
         FROM items
         ORDER BY id
         """)
@@ -229,9 +254,6 @@ async def list_items():
 
 @app.post("/items")
 async def create_item(name: str):
-
-    global REQUEST_COUNT
-    REQUEST_COUNT += 1
 
     async with app.state.db.acquire() as conn:
 
