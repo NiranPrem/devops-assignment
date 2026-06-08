@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-const API_URL = process.env.API_URL || "http://localhost:8000";
+const API_URL = process.env.API_URL || "http://api";
 
 const server = http.createServer((req, res) => {
 
@@ -16,34 +16,97 @@ const server = http.createServer((req, res) => {
 
   if (req.url === "/metrics") {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("# HELP web_up Web service availability\n# TYPE web_up gauge\nweb_up 1\n");
+    res.end(
+      "# HELP web_up Web service availability\n" +
+      "# TYPE web_up gauge\n" +
+      "web_up 1\n"
+    );
     return;
   }
 
   if (req.url.startsWith("/api/")) {
-    const target = `${API_URL}${req.url.replace("/api", "")}`;
-    const client = target.startsWith("https") ? https : http;
 
-    client.get(target, (apiRes) => {
-      res.writeHead(apiRes.statusCode, apiRes.headers);
-      apiRes.pipe(res);
-    }).on("error", () => {
-      res.writeHead(502);
-      res.end(JSON.stringify({ error: "API unavailable" }));
+    const target =
+      `${API_URL}${req.url.replace("/api", "")}`;
+
+    const url =
+      new URL(target);
+
+    const client =
+      url.protocol === "https:"
+        ? https
+        : http;
+
+    const options = {
+      hostname: url.hostname,
+      port: url.port,
+      path: url.pathname + url.search,
+      method: req.method,
+      headers: req.headers
+    };
+
+    const proxyReq =
+      client.request(
+        options,
+        (proxyRes) => {
+
+          res.writeHead(
+            proxyRes.statusCode,
+            proxyRes.headers
+          );
+
+          proxyRes.pipe(res);
+
+        }
+      );
+
+    proxyReq.on("error", (err) => {
+
+      res.writeHead(502, {
+        "Content-Type":
+          "application/json"
+      });
+
+      res.end(
+        JSON.stringify({
+          error: "API unavailable",
+          details: err.message
+        })
+      );
+
     });
+
+    req.pipe(proxyReq);
 
     return;
   }
 
-  const html = fs.readFileSync(
-    path.join(__dirname, "index.html"),
-    "utf8"
+  const html =
+    fs.readFileSync(
+      path.join(
+        __dirname,
+        "index.html"
+      ),
+      "utf8"
+    );
+
+  res.writeHead(
+    200,
+    {
+      "Content-Type":
+        "text/html"
+    }
   );
 
-  res.writeHead(200, { "Content-Type": "text/html" });
   res.end(html);
+
 });
 
-server.listen(PORT, () => {
-  console.log(`Web server running on :${PORT}`);
-});
+server.listen(
+  PORT,
+  () => {
+    console.log(
+      `Web server running on :${PORT}`
+    );
+  }
+);
