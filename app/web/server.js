@@ -1,10 +1,13 @@
 const http = require("http");
 const https = require("https");
+const fs = require("fs");
+const path = require("path");
 
 const PORT = process.env.PORT || 3000;
 const API_URL = process.env.API_URL || "http://localhost:8000";
 
 const server = http.createServer((req, res) => {
+
   if (req.url === "/healthz") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ status: "healthy" }));
@@ -32,8 +35,15 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  const html = fs.readFileSync(
+    path.join(__dirname, "index.html"),
+    "utf8"
+  );
+
   res.writeHead(200, { "Content-Type": "text/html" });
-  res.end("<h1>DevOps Assignment</h1>");
+  res.end(html);
 });
 
-server.listen(PORT, () => console.log(`Web server running on :${PORT}`));
+server.listen(PORT, () => {
+  console.log(`Web server running on :${PORT}`);
+});
