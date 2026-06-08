@@ -1,10 +1,258 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>DevOps Assignment</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopSphere - Cloud Native Commerce</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+    background:#f4f7fc;
+    color:#333;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+}
+
+.hero{
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    color:white;
+    text-align:center;
+    padding:100px 40px;
+}
+
+.hero h1{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    font-size:22px;
+    margin-bottom:30px;
+}
+
+.button{
+    display:inline-block;
+    padding:15px 30px;
+    background:#f59e0b;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.status{
+    width:90%;
+    margin:30px auto;
+    background:#dcfce7;
+    border-left:6px solid #16a34a;
+    padding:20px;
+    border-radius:10px;
+}
+
+.section{
+    padding:60px;
+}
+
+.section h2{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:40px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card h3{
+    margin-bottom:15px;
+    color:#2563eb;
+}
+
+.price{
+    font-size:28px;
+    font-weight:bold;
+    color:#16a34a;
+    margin-top:15px;
+}
+
+.features{
+    background:white;
+}
+
+footer{
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+</style>
 </head>
+
 <body>
-    <h1>Final Assignment Tesssssst</h1>
-    <p>CI/CD Deployment Working Successfully</p>
+
+<header>
+    <div class="logo">ShopSphere</div>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Products</a>
+        <a href="#">Categories</a>
+        <a href="#">Offers</a>
+        <a href="#">Contact</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Modern E-Commerce Platform</h1>
+    <p>Fast • Secure • Scalable • Cloud Native</p>
+    <a href="#" class="button">Explore Products</a>
+</section>
+
+<div class="status">
+    <h2>Deployment Status: SUCCESS</h2>
+    <p>
+        CI/CD Pipeline Active | Jenkins | Kubernetes | Prometheus |
+        Grafana | Loki | Trivy Security Scan
+    </p>
+</div>
+
+<section class="section">
+    <h2>Featured Products</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>Premium Smartphone</h3>
+            <p>Latest flagship performance with AI-powered features.</p>
+            <div class="price">$999</div>
+        </div>
+
+        <div class="card">
+            <h3>Gaming Laptop</h3>
+            <p>High performance workstation for professionals.</p>
+            <div class="price">$1499</div>
+        </div>
+
+        <div class="card">
+            <h3>Wireless Earbuds</h3>
+            <p>Crystal clear audio with active noise cancellation.</p>
+            <div class="price">$199</div>
+        </div>
+
+        <div class="card">
+            <h3>Smart Watch</h3>
+            <p>Health tracking, fitness monitoring and notifications.</p>
+            <div class="price">$299</div>
+        </div>
+
+    </div>
+</section>
+
+<section class="section features">
+    <h2>Platform Highlights</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>CI/CD Automation</h3>
+            <p>Automated build, test and deployment pipeline.</p>
+        </div>
+
+        <div class="card">
+            <h3>Kubernetes Deployment</h3>
+            <p>Highly available workloads with rolling updates.</p>
+        </div>
+
+        <div class="card">
+            <h3>Monitoring Stack</h3>
+            <p>Prometheus, Grafana and Loki observability platform.</p>
+        </div>
+
+        <div class="card">
+            <h3>Security Scanning</h3>
+            <p>Container image security checks using Trivy.</p>
+        </div>
+
+        <div class="card">
+            <h3>Network Policies</h3>
+            <p>Secure communication between application components.</p>
+        </div>
+
+        <div class="card">
+            <h3>Cloud Native Design</h3>
+            <p>Built using modern DevOps and SRE best practices.</p>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <h2>Business Metrics</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>100K+</h3>
+            <p>Active Customers</p>
+        </div>
+
+        <div class="card">
+            <h3>50K+</h3>
+            <p>Orders Processed</p>
+        </div>
+
+        <div class="card">
+            <h3>99.9%</h3>
+            <p>Platform Availability</p>
+        </div>
+
+        <div class="card">
+            <h3>24/7</h3>
+            <p>Customer Support</p>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <h3>ShopSphere Cloud Commerce Platform</h3>
+    <p>Powered by Kubernetes • Jenkins • Prometheus • Grafana • Trivy</p>
+</footer>
+
 </body>
 </html>
