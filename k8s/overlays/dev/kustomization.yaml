@@ -10,6 +10,7 @@ commonLabels:
   environment: dev
 
 patches:
+  # Single replica for dev
   - patch: |-
       - op: replace
         path: /spec/replicas
@@ -17,7 +18,6 @@ patches:
     target:
       kind: Deployment
       name: api
-
   - patch: |-
       - op: replace
         path: /spec/replicas
@@ -26,6 +26,7 @@ patches:
       kind: Deployment
       name: web
 
+  # Dev password
   - patch: |-
       - op: replace
         path: /stringData/POSTGRES_PASSWORD
@@ -36,9 +37,6 @@ patches:
 
 images:
   - name: devops-assignment/api
-    newName: devops-assignment/api
-    newTag: dev
-
+    newTag: latest
   - name: devops-assignment/web
-    newName: devops-assignment/web
-    newTag: dev
+    newTag: latest
