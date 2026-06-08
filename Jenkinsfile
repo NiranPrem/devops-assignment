@@ -274,10 +274,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ SUCCESS: Build ${IMAGE_TAG} deployed to DEV (:30080) and QAT (:30081)"
+            echo " SUCCESS: Build ${IMAGE_TAG} deployed to DEV (:30080) and QAT (:30081)"
         }
         failure {
-            echo "❌ FAILED — initiating rollback..."
+            echo " FAILED — initiating rollback..."
             sh '''
                 kubectl rollout undo deployment/api -n dev 2>/dev/null || true
                 kubectl rollout undo deployment/web -n dev 2>/dev/null || true
