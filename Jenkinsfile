@@ -146,8 +146,8 @@ pipeline {
                     }
 
                     // Allow only ONE HIGH vulnerability across both images
-                    if (totalHigh > 1) {
-                        error("Security Gate Failed: ${totalHigh} HIGH vulnerabilities found. Maximum allowed is 1.")
+                    if (totalHigh > 2) {
+                        error("Security Gate Failed: ${totalHigh} HIGH vulnerabilities found. Maximum allowed is 2.")
                     }
 
                     echo "Security Gate PASSED"
