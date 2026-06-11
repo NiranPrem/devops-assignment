@@ -1,4 +1,4 @@
-# Cloud Native Application Platform
+# Cloud Native Application Platform.
 
 ## Overview
 
