@@ -1,11 +1,13 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine
+
+RUN apk update && apk upgrade --no-cache
 
 RUN addgroup -S app && adduser -S app -G app
 
 WORKDIR /app
 
 COPY --chown=app:app package*.json ./
-RUN npm ci --only=production 2>/dev/null || true
+RUN npm ci --omit=dev 2>/dev/null || true
 
 COPY --chown=app:app . .
 
