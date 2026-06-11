@@ -48,7 +48,7 @@ cmd_start() {
     $(build_profile_args "${profiles[@]}") \
     up -d --build --remove-orphans
   log "Waiting for health checks..."
-  sleep 5
+  sleep 30
   cmd_status
 }
 
